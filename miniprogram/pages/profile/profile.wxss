@@ -1,0 +1,100 @@
+/* pages/profile/profile.wxss */
+
+.profile-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 24rpx;
+  padding: 60rpx;
+  margin: 20rpx;
+  text-align: center;
+  color: white;
+}
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  margin: 0 auto 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64rpx;
+  font-weight: bold;
+  border: 4rpx solid rgba(255,255,255,0.3);
+}
+
+.nickname {
+  font-size: 40rpx;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.birthday {
+  font-size: 28rpx;
+  opacity: 0.9;
+}
+
+.menu-card {
+  background: white;
+  border-radius: 24rpx;
+  margin: 20rpx;
+  overflow: hidden;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-icon {
+  font-size: 40rpx;
+  margin-right: 24rpx;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: 32rpx;
+  color: #333;
+}
+
+.menu-item.logout .menu-text {
+  color: #ff4757;
+}
+
+.arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+.empty {
+  text-align: center;
+  padding: 200rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+}
+
+.cloud-info {
+  text-align: center;
+  padding: 40rpx;
+  margin-top: 40rpx;
+}
+
+.cloud-text {
+  font-size: 24rpx;
+  color: #999;
+}

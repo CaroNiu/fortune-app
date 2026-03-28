@@ -1,0 +1,126 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 未登录状态 -->
+  <view class="login-card" wx:if="{{!userInfo}}">
+    <view class="login-title">🔮 先告诉我你的生日</view>
+    <view class="form-group">
+      <text class="label">昵称</text>
+      <input type="text" placeholder="怎么称呼你？" value="{{nickname}}" bindinput="onNicknameInput" />
+    </view>
+    <view class="form-group">
+      <text class="label">出生日期</text>
+      <picker mode="date" value="{{birthday}}" end="{{today}}" bindchange="onBirthdayChange">
+        <view class="picker">{{birthday || '请选择日期'}}</view>
+      </picker>
+    </view>
+    <button class="btn" bindtap="login">开始测算</button>
+  </view>
+
+  <!-- 已登录状态 -->
+  <block wx:if="{{userInfo}}">
+    <!-- 运势卡片 -->
+    <view class="fortune-card">
+      <view class="user-bar">
+        <text>你好，<text class="nickname">{{userInfo.nickname}}</text></text>
+        <text class="switch-btn" bindtap="switchUser">切换用户</text>
+      </view>
+
+      <!-- 分数圆环 -->
+      <view class="score-section">
+        <view class="score-circle" style="--score-deg: {{(fortune.overall/100)*360}}deg">
+          <view class="score-inner">
+            <text class="score-number">{{fortune.overall}}</text>
+          </view>
+        </view>
+        <text class="score-label">今日综合运势</text>
+      </view>
+
+      <!-- 运势详情 -->
+      <view class="fortune-details">
+        <view class="fortune-item">
+          <text class="label">事业</text>
+          <view class="bar"><view class="bar-fill" style="width: {{fortune.career}}%; background: #667eea;"></view></view>
+          <text class="value">{{fortune.career}}</text>
+        </view>
+        <view class="fortune-item">
+          <text class="label">财运</text>
+          <view class="bar"><view class="bar-fill" style="width: {{fortune.wealth}}%; background: #f093fb;"></view></view>
+          <text class="value">{{fortune.wealth}}</text>
+        </view>
+        <view class="fortune-item">
+          <text class="label">感情</text>
+          <view class="bar"><view class="bar-fill" style="width: {{fortune.love}}%; background: #f5576c;"></view></view>
+          <text class="value">{{fortune.love}}</text>
+        </view>
+        <view class="fortune-item">
+          <text class="label">健康</text>
+          <view class="bar"><view class="bar-fill" style="width: {{fortune.health}}%; background: #4facfe;"></view></view>
+          <text class="value">{{fortune.health}}</text>
+        </view>
+      </view>
+
+      <!-- 幸运信息 -->
+      <view class="lucky-info">
+        <view class="lucky-item">
+          <text class="lucky-label">幸运色</text>
+          <text class="lucky-value">{{fortune.luckyColor}}</text>
+        </view>
+        <view class="lucky-item">
+          <text class="lucky-label">幸运数字</text>
+          <text class="lucky-value">{{fortune.luckyNumber}}</text>
+        </view>
+        <view class="lucky-item">
+          <text class="lucky-label">吉时</text>
+          <text class="lucky-value" style="font-size: 12rpx;">{{fortune.luckyTime}}</text>
+        </view>
+      </view>
+
+      <!-- 宜忌 -->
+      <view class="tips-section">
+        <view class="tip-box good">
+          <text class="tip-title">✅ 宜</text>
+          <text class="tip-content">{{fortune.suitable}}</text>
+        </view>
+        <view class="tip-box bad">
+          <text class="tip-title">❌ 忌</text>
+          <text class="tip-content">{{fortune.avoid}}</text>
+        </view>
+      </view>
+
+      <!-- 打卡按钮 -->
+      <button 
+        class="checkin-btn {{hasCheckedIn ? 'checked' : ''}}" 
+        bindtap="checkIn"
+        disabled="{{hasCheckedIn || checkingIn}}"
+      >
+        {{hasCheckedIn ? '已打卡 ✨' : (checkingIn ? '打卡中...' : '今日打卡')}}
+      </button>
+    </view>
+
+    <!-- 打卡日历 -->
+    <view class="calendar-card">
+      <view class="calendar-header">
+        <text class="calendar-title">📅 本月打卡</text>
+        <text class="streak-info">🔥 连续 {{stats.streakDays || 0}} 天</text>
+      </view>
+      <view class="weekdays">
+        <text wx:for="{{weekdays}}" wx:key="*this">{{item}}</text>
+      </view>
+      <view class="calendar-grid">
+        <view 
+          wx:for="{{calendarDays}}" 
+          wx:key="date"
+          class="day {{item.checked ? 'checked' : ''}} {{item.isToday ? 'today' : ''}}"
+        >
+          {{item.day}}
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 加载中 -->
+  <view class="loading" wx:if="{{loading}}">
+    <view class="spinner"></view>
+    <text>正在加载...</text>
+  </view>
+</view>

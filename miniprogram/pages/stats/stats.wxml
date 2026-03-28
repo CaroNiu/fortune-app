@@ -1,0 +1,47 @@
+<!--pages/stats/stats.wxml-->
+<view class="container">
+  <view class="stats-card" wx:if="{{userInfo}}">
+    <view class="card-title">📊 我的运势统计</view>
+    
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value">{{stats.totalCheckins || 0}}</text>
+        <text class="stat-label">累计打卡</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.maxStreak || 0}}</text>
+        <text class="stat-label">最高连续</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.avgScore || 0}}</text>
+        <text class="stat-label">平均运势</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{stats.streakDays || 0}}</text>
+        <text class="stat-label">当前连续</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="history-card" wx:if="{{userInfo}}">
+    <view class="card-title">📅 打卡记录</view>
+    <scroll-view scroll-y class="history-list">
+      <view wx:for="{{checkins}}" wx:key="_id" class="history-item">
+        <view class="history-date">{{item.date}}</view>
+        <view class="history-fortune">
+          <text class="score">{{item.fortune.overall}}分</text>
+          <text class="detail">{{item.fortune.suitable}}</text>
+        </view>
+      </view>
+      <view wx:if="{{checkins.length === 0}}" class="empty">
+        <text class="empty-text">暂无打卡记录</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="empty" wx:if="{{!userInfo}}">
+    <view class="empty-icon">🔮</view>
+    <text class="empty-text">请先登录查看统计</text>
+    <button class="btn" bindtap="goToIndex" style="margin-top: 40rpx;">去登录</button>
+  </view>
+</view>

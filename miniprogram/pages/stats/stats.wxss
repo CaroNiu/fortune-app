@@ -1,0 +1,101 @@
+/* pages/stats/stats.wxss */
+
+.stats-card {
+  background: white;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin: 20rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 32rpx;
+}
+
+.stats-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  width: 50%;
+  text-align: center;
+  padding: 32rpx 0;
+}
+
+.stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+  display: block;
+}
+
+.history-card {
+  background: white;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin: 20rpx;
+  max-height: 600rpx;
+}
+
+.history-list {
+  max-height: 500rpx;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-date {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.history-fortune {
+  text-align: right;
+}
+
+.history-fortune .score {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #667eea;
+  display: block;
+}
+
+.history-fortune .detail {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.empty {
+  text-align: center;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+}
