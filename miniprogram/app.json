@@ -6,14 +6,15 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#667eea",
+    "navigationBarBackgroundColor": "#1a1a2e",
     "navigationBarTitleText": "每日运势",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#0f0f1a"
   },
   "tabBar": {
-    "color": "#999",
-    "selectedColor": "#667eea",
-    "backgroundColor": "#fff",
+    "color": "#6b7280",
+    "selectedColor": "#a78bfa",
+    "backgroundColor": "#1a1a2e",
     "borderStyle": "black",
     "list": [
       {
