@@ -1,77 +1,91 @@
-/**app.wxss**/
+/* app.wxss - 全局样式 */
+
+/* 设计规范：
+   - 字体：系统字体栈
+   - 背景：暗色主题 OKLCH
+   - 间距：8px 倍数
+*/
+
 page {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
-  background: #f5f5f5;
+  /* 暗色主题背景 */
+  background-color: oklch(0.12 0.02 260);
+  color: oklch(0.9 0.02 80);
+  
+  /* 字体设置 */
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+  
+  /* 间距系统 */
+  --space-xs: 8rpx;
+  --space-sm: 16rpx;
+  --space-md: 24rpx;
+  --space-lg: 32rpx;
+  --space-xl: 48rpx;
 }
 
+/* 通用容器 */
 .container {
-  padding: 20rpx;
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 通用按钮 */
-.btn {
-  width: 100%;
-  padding: 28rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 16rpx;
-  font-size: 32rpx;
-  font-weight: 600;
-  text-align: center;
-}
-
-.btn:after {
-  border: none;
-}
-
-.btn-disabled {
-  background: #e0e0e0;
-  color: #999;
-}
-
-/* 卡片样式 */
+/* 卡片通用样式 */
 .card {
-  background: white;
+  background: oklch(0.15 0.02 260);
   border-radius: 24rpx;
   padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.08);
+  margin: 24rpx;
+  border: 1rpx solid oklch(0.25 0.02 260);
 }
 
-.card-title {
-  font-size: 32rpx;
+/* 按钮通用样式 */
+.btn-primary {
+  background: oklch(0.7 0.18 280);
+  color: white;
+  border-radius: 16rpx;
+  padding: 24rpx 32rpx;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 24rpx;
-}
-
-/* 渐变文字 */
-.gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* 加载动画 */
-.loading {
-  text-align: center;
-  padding: 60rpx;
-  color: #999;
-}
-
-/* 空状态 */
-.empty {
-  text-align: center;
-  padding: 100rpx 40rpx;
-  color: #999;
-}
-
-.empty-icon {
-  font-size: 80rpx;
-  margin-bottom: 20rpx;
-}
-
-.empty-text {
   font-size: 28rpx;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* 输入框通用样式 */
+.input {
+  background: oklch(0.1 0.02 260);
+  border: 2rpx solid oklch(0.3 0.02 260);
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  color: oklch(0.98 0.02 80);
+  font-size: 30rpx;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: oklch(0.7 0.2 280);
+  outline: none;
+}
+
+.input::placeholder {
+  color: oklch(0.4 0.02 80);
+}
+
+/* 文本颜色 */
+.text-primary { color: oklch(0.85 0.15 80); }
+.text-secondary { color: oklch(0.6 0.02 80); }
+.text-muted { color: oklch(0.5 0.02 80); }
+
+/* 背景色 */
+.bg-surface { background: oklch(0.15 0.02 260); }
+.bg-elevated { background: oklch(0.2 0.02 260); }
+
+/* 安全的底部间距 */
+.safe-bottom {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 24rpx);
 }
