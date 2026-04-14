@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牛氏运势 - 今日运势查询</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6366f1;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; padding: 40px 0; background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; border-radius: 20px; margin-bottom: 30px; }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        header p { opacity: 0.9; font-size: 1.1rem; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 24px; border: none; background: var(--card-bg); border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 500; color: var(--text-light); transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-btn:hover:not(.active) { background: #e2e8f0; }
+        .content { display: none; }
+        .content.active { display: block; }
+        .lucky-banner { background: linear-gradient(135deg, #f472b6, #c084fc); border-radius: 20px; padding: 30px; color: white; margin-bottom: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .lucky-item { text-align: center; }
+        .lucky-item .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .lucky-item .label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px; }
+        .lucky-item .value { font-size: 1.5rem; font-weight: bold; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .card-icon { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; }
+        .card-title { font-size: 1.3rem; font-weight: bold; }
+        .card-rank { font-size: 0.85rem; color: var(--text-light); }
+        .level-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; margin-bottom: 15px; }
+        .level-excellent { background: #d1fae5; color: #065f46; }
+        .level-good { background: #dcfce7; color: #166534; }
+        .level-average { background: #fef3c7; color: #92400e; }
+        .level-poor { background: #fee2e2; color: #991b1b; }
+        .card-desc { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin-bottom: 15px; }
+        .card-details { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-top: 15px; border-top: 1px solid #e2e8f0; }
+        .detail-item { text-align: center; }
+        .detail-label { font-size: 0.75rem; color: var(--text-light); margin-bottom: 3px; }
+        .detail-value { font-size: 0.9rem; font-weight: 500; }
+        .knowledge { background: #f0f9ff; border-radius: 12px; padding: 15px; margin-top: 15px; border-left: 4px solid var(--primary); }
+        .knowledge-title { font-weight: 600; color: var(--primary); margin-bottom: 8px; font-size: 0.9rem; }
+        .knowledge-content { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card-bg); border-radius: 20px; padding: 30px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; margin: 20px; }
+        .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+        .modal-header { text-align: center; margin-bottom: 25px; }
+        .modal-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 15px; }
+        .modal-title { font-size: 1.8rem; margin-bottom: 5px; }
+        .modal-level { display: inline-block; padding: 6px 16px; border-radius: 20px; font-weight: 500; }
+        .modal-section { margin-bottom: 20px; }
+        .modal-section-title { font-weight: 600; color: var(--text); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #e2e8f0; }
+        .modal-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .modal-grid-item { background: #f8fafc; padding: 15px; border-radius: 10px; text-align: center; }
+        .modal-grid-label { font-size: 0.8rem; color: var(--text-light); margin-bottom: 5px; }
+        .modal-grid-value { font-weight: 600; color: var(--text); }
+        footer { text-align: center; padding: 40px 0; color: var(--text-light); font-size: 0.9rem; }
+        @media (max-width: 768px) { header h1 { font-size: 1.8rem; } .tabs { justify-content: center; } .card-grid { grid-template-columns: 1fr; } .modal-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 牛氏运势</h1>
+            <p>探索你的命运，遇见更好的自己</p>
+        </header>
+        <div class="lucky-banner" id="luckyBanner">
+            <div class="lucky-item"><div class="icon">🎨</div><div class="label">今日幸运色</div><div class="value" id="luckyColor">-</div></div>
+            <div class="lucky-item"><div class="icon">🔢</div><div class="label">今日幸运数字</div><div class="value" id="luckyNumber">-</div></div>
+            <div class="lucky-item"><div class="icon">🧭</div><div class="label">幸运方位</div><div class="value" id="luckyDirection">-</div></div>
+            <div class="lucky-item"><div class="icon">💰</div><div class="label">财神方位</div><div class="value" id="wealthDirection">-</div></div>
+        </div>
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="horoscope">星座运势</button>
+            <button class="tab-btn" data-tab="zodiac">生肖运势</button>
+        </div>
+        <div class="content active" id="horoscopeContent"><div class="card-grid" id="horoscopeGrid"></div></div>
+        <div class="content" id="zodiacContent"><div class="card-grid" id="zodiacGrid"></div></div>
+    </div>
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon">♈</div>
+                <div class="modal-title" id="modalTitle">白羊座</div>
+                <span class="modal-level level-good" id="modalLevel">吉</span>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">📊 运势详解</div>
+                <div class="modal-grid">
+                    <div class="modal-grid-item"><div class="modal-grid-label">事业</div><div class="modal-grid-value" id="modalCareer">-</div></div>
+                    <div class="modal-grid-item"><div class="modal-grid-label">爱情</div><div class="modal-grid-value" id="modalLove">-</div></div>
+                    <div class="modal-grid-item"><div class="modal-grid-label">财运</div><div class="modal-grid-value" id="modalWealth">-</div></div>
+                    <div class="modal-grid-item"><div class="modal-grid-label">健康</div><div class="modal-grid-value" id="modalHealth">-</div></div>
+                </div>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">🍀 幸运元素</div>
+                <div class="modal-grid">
+                    <div class="modal-grid-item"><div class="modal-grid-label">幸运色</div><div class="modal-grid-value" id="modalColor">-</div></div>
+                    <div class="modal-grid-item"><div class="modal-grid-label">幸运数字</div><div class="modal-grid-value" id="modalNumber">-</div></div>
+                    <div class="modal-grid-item"><div class="modal-grid-label">幸运方位</div><div class="modal-grid-value" id="modalDirection">-</div></div>
+                    <div class="modal-grid-item"><div class="modal-grid-label">幸运星座</div><div class="modal-grid-value" id="modalLuckyZodiac">-</div></div>
+                </div>
+            </div>
+            <div class="knowledge"><div class="knowledge-title">📚 知识解读</div><div class="knowledge-content" id="modalKnowledge">-</div></div>
+        </div>
+    </div>
+    <footer><p>© 2026 牛氏运势 · 传统文化数字化平台</p></footer>
+    <script>
+        const API_BASE = 'http://localhost:8080/api/fortune';
+        const ZODIAC_ICONS = { aries: '♈', taurus: '♉', gemini: '♊', cancer: '♋', leo: '♌', virgo: '♍', libra: '♎', scorpio: '♏', sagittarius: '♐', capricorn: '♑', aquarius: '♒', pisces: '♓' };
+        const ZODIAC_ANIMAL_ICONS = { rat: '🐭', ox: '🐮', tiger: '🐯', rabbit: '🐰', dragon: '🐲', snake: '🐍', horse: '🐴', goat: '🐐', monkey: '🐵', rooster: '🐔', dog: '🐕', pig: '🐷' };
+        const LEVEL_MAP = { excellent: { name: '大吉', class: 'level-excellent' }, good: { name: '吉', class: 'level-good' }, average: { name: '平', class: 'level-average' }, poor: { name: '凶', class: 'level-poor' }, terrible: { name: '大凶', class: 'level-poor' } };
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab + 'Content').classList.add('active');
+            });
+        });
+
+        async function loadLuckyElement() {
+            try {
+                const res = await fetch(API_BASE + '/lucky');
+                const data = await res.json();
+                if (data.code === 200 && data.data) {
+                    document.getElementById('luckyColor').textContent = data.data.luckyColor;
+                    document.getElementById('luckyNumber').textContent = data.data.luckyNumber;
+                    document.getElementById('luckyDirection').textContent = data.data.luckyDirection;
+                    document.getElementById('wealthDirection').textContent = data.data.wealthGodDirection;
+                }
+            } catch (e) {
+                const today = new Date();
+                const seed = Math.floor(today.getTime() / (1000 * 60 * 60 * 24));
+                const colors = ['红色', '橙色', '黄色', '绿色', '青色', '蓝色', '紫色', '粉色'];
+                const directions = ['正东', '东南', '正南', '西南', '正西', '西北', '正北', '东北'];
+                document.getElementById('luckyColor').textContent = colors[seed % colors.length];
+                document.getElementById('luckyNumber').textContent = (seed % 9) + 1;
+                document.getElementById('luckyDirection').textContent = directions[seed % directions.length];
+                document.getElementById('wealthDirection').textContent = directions[(seed + 3) % directions.length];
+            }
+        }
+
+        async function loadHoroscopes() {
+            try {
+                const res = await fetch(API_BASE + '/horoscope/today');
+                const data = await res.json();
+                if (data.code === 200) renderHoroscopes(data.data);
+            } catch (e) { renderHoroscopes(getMockHoroscopes()); }
+        }
+
+        function renderHoroscopes(horoscopes) {
+            const grid = document.getElementById('horoscopeGrid');
+            grid.innerHTML = horoscopes.map(h => {
+                const level = LEVEL_MAP[h.level] || LEVEL_MAP.average;
+                return '<div class="card" onclick="showHoroscopeDetail(\'' + h.zodiac + '\')"><div class="card-header"><div class="card-icon">' + (ZODIAC_ICONS[h.zodiac] || '⭐') + '</div><div><div class="card-title">' + h.zodiacName + '</div></div></div><span class="level-badge ' + level.class + '">' + level.name + '</span><div class="card-desc">' + h.description + '</div><div class="card-details"><div class="detail-item"><div class="detail-label">幸运色</div><div class="detail-value">' + h.luckyColor + '</div></div><div class="detail-item"><div class="detail-label">幸运数</div><div class="detail-value">' + h.luckyNumber + '</div></div><div class="detail-item"><div class="detail-label">方位</div><div class="detail-value">' + h.luckyDirection + '</div></div></div><div class="knowledge"><div class="knowledge-title">📚 知识解读</div><div class="knowledge-content">' + h.knowledgeNote + '</div></div></div>';
+            }).join('');
+        }
+
+        async function loadZodiac() {
+            try {
+                const res = await fetch(API_BASE + '/zodiac');
+                const data = await res.json();
+                if (data.code === 200) renderZodiac(data.data);
+            } catch (e) { renderZodiac(getMockZodiac()); }
+        }
+
+        function renderZodiac(zodiacs) {
+            const grid = document.getElementById('zodiacGrid');
+            grid.innerHTML = zodiacs.map(z => {
+                return '<div class="card" onclick="showZodiacDetail(\'' + z.animal + '\')"><div class="card-header"><div class="card-icon">' + (ZODIAC_ANIMAL_ICONS[z.animal] || '🐾') + '</div><div><div class="card-title">' + z.animalName + '年</div><div class="card-rank">运势排名：第' + z.rank + '名</div></div></div><div class="card-desc">' + z.overall + '</div><div class="card-details"><div class="detail-item"><div class="detail-label">幸运色</div><div class="detail-value">' + (z.luckyColors ? z.luckyColors.join('、') : '-') + '</div></div><div class="detail-item"><div class="detail-label">幸运数</div><div class="detail-value">' + (z.luckyNumbers ? z.luckyNumbers.join('、') : '-') + '</div></div><div class="detail-item"><div class="detail-label">贵人生肖</div><div class="detail-value">' + z.luckyAnimal + '</div></div></div><div class="knowledge"><div class="knowledge-title">📚 生肖知识</div><div class="knowledge-content">' + z.knowledgeNote + '</div></div></div>';
+            }).join('');
+        }
+
+        let currentHoroscopes = [];
+        let currentZodiacs = [];
+
+        function showHoroscopeDetail(zodiac) {
+            const h = currentHoroscopes.find(item => item.zodiac === zodiac) || getMockHoroscopes().find(item => item.zodiac === zodiac);
+            if (!h) return;
+            const level = LEVEL_MAP[h.level] || LEVEL_MAP.average;
+            document.getElementById('modalIcon').textContent = ZODIAC_ICONS[zodiac] || '⭐';
+            document.getElementById('modalTitle').textContent = h.zodiacName;
+            document.getElementById('modalLevel').textContent = level.name;
+            document.getElementById('modalLevel').className = 'modal-level ' + level.class;
+            document.getElementById('modalCareer').textContent = h.career;
+            document.getElementById('modalLove').textContent = h.love;
+            document.getElementById('modalWealth').textContent = h.wealth;
+            document.getElementById('modalHealth').textContent = h.health;
+            document.getElementById('modalColor').textContent = h.luckyColor;
+            document.getElementById('modalNumber').textContent = h.luckyNumber;
+            document.getElementById('modalDirection').textContent = h.luckyDirection;
+            document.getElementById('modalLuckyZodiac').textContent = h.luckyZodiac;
+            document.getElementById('modalKnowledge').textContent = h.knowledgeNote;
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function showZodiacDetail(animal) {
+            const z = currentZodiacs.find(item => item.animal === animal) || getMockZodiac().find(item => item.animal === animal);
+            if (!z) return;
+            document.getElementById('modalIcon').textContent = ZODIAC_ANIMAL_ICONS[animal] || '🐾';
+            document.getElementById('modalTitle').textContent = z.animalName;
+            document.getElementById('modalLevel').textContent = z.rank <= 3 ? '前三' : '运势';
+            document.getElementById('modalLevel').className = 'modal-level ' + (z.rank <= 3 ? 'level-excellent' : 'level-good');
+            document.getElementById('modalCareer').textContent = z.career;
+            document.getElementById('modalLove').textContent = z.love;
+            document.getElementById('modalWealth').textContent = z.wealth;
+            document.getElementById('modalHealth').textContent = z.health;
+            document.getElementById('modalColor').textContent = z.luckyColors ? z.luckyColors.join('、') : '-';
+            document.getElementById('modalNumber').textContent = z.luckyNumbers ? z.luckyNumbers.join('、') : '-';
+            document.getElementById('modalDirection').textContent = z.luckyDirection;
+            document.getElementById('modalLuckyZodiac').textContent = z.luckyAnimal;
+            document.getElementById('modalKnowledge').textContent = z.knowledgeNote;
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('detailModal').classList.remove('active'); }
+        document.getElementById('detailModal').addEventListener('click', (e) => { if (e.target.id === 'detailModal') closeModal(); });
+
+        function getMockHoroscopes() {
+            return [
+                { zodiac: 'aries', zodiacName: '白羊座', level: 'good', description: '今天的运势很不错，适合开展新项目。', career: '工作进展顺利', love: '桃花运不错', wealth: '财运平稳', health: '注意休息', luckyColor: '红色', luckyNumber: 7, luckyDirection: '正东', luckyZodiac: '狮子座', knowledgeNote: '白羊座是火象星座，代表勇气和热情。' },
+                { zodiac: 'taurus', zodiacName: '金牛座', level: 'excellent', description: '财运亨通，有望获得意外收获。', career: '事业上升期', love: '感情稳定', wealth: '收入增加', health: '精力充沛', luckyColor: '绿色', luckyNumber: 5, luckyDirection: '东南', luckyZodiac: '摩羯座', knowledgeNote: '金牛座是土象星座，代表稳定和务实。' },
+                { zodiac: 'gemini', zodiacName: '双子座', level: 'average', description: '今日运势平稳，保持平常心即可。', career: '按部就班', love: '人际活跃', wealth: '收支平衡', health: '状态良好', luckyColor: '黄色', luckyNumber: 3, luckyDirection: '正南', luckyZodiac: '天秤座', knowledgeNote: '双子座是风象星座，代表沟通和变化。' },
+                { zodiac: 'cancer', zodiacName: '巨蟹座', level: 'good', description: '家庭运势上升，适合陪伴家人。', career: '稳定发展', love: '家庭和睦', wealth: '理财顺利', health: '身心健康', luckyColor: '银色', luckyNumber: 2, luckyDirection: '西南', luckyZodiac: '双鱼座', knowledgeNote: '巨蟹座是水象星座，代表情感和家庭。' },
+                { zodiac: 'leo', zodiacName: '狮子座', level: 'excellent', description: '魅力大爆发，适合展现才华！', career: '领导力强', love: '桃花旺盛', wealth: '财运大旺', health: '活力满满', luckyColor: '金色', luckyNumber: 1, luckyDirection: '正西', luckyZodiac: '白羊座', knowledgeNote: '狮子座是火象星座，代表自信和领导力。' },
+                { zodiac: 'virgo', zodiacName: '处女座', level: 'average', description: '适合处理细节工作，保持完美主义。', career: '注重细节', love: '理性对待', wealth: '节约理财', health: '注意保养', luckyColor: '灰色', luckyNumber: 6, luckyDirection: '西北', luckyZodiac: '金牛座', knowledgeNote: '处女座是土象星座，代表完美和分析。' },
+                { zodiac: 'libra', zodiacName: '天秤座', level: 'good', description: '人际关系和谐，适合社交活动。', career: '人际运佳', love: '追求平衡', wealth: '投资收益', health: '状态良好', luckyColor: '粉色', luckyNumber: 4, luckyDirection: '正北', luckyZodiac: '双子座', knowledgeNote: '天秤座是风象星座，代表平衡和美感。' },
+                { zodiac: 'scorpio', zodiacName: '天蝎座', level: 'poor', description: '需要深入思考，避免情绪波动。', career: '专注工作', love: '注意沟通', wealth: '谨慎投资', health: '心理调节', luckyColor: '深红色', luckyNumber: 8, luckyDirection: '东北', luckyZodiac: '巨蟹座', knowledgeNote: '天蝎座是水象星座，代表深度和热情。' },
+                { zodiac: 'sagittarius', zodiacName: '射手座', level: 'good', description: '适合旅行和学习，扩展视野。', career: '创新思维', love: '热情主动', wealth: '偏财运好', health: '活力充沛', luckyColor: '紫色', luckyNumber: 9, luckyDirection: '正东', luckyZodiac: '狮子座', knowledgeNote: '射手座是火象星座，代表自由和乐观。' },
+                { zodiac: 'capricorn', zodiacName: '摩羯座', level: 'average', description: '稳步前进，适合设定目标。', career: '目标明确', love: '认真对待', wealth: '稳定收入', health: '劳逸结合', luckyColor: '深棕色', luckyNumber: 4, luckyDirection: '东南', luckyZodiac: '处女座', knowledgeNote: '摩羯座是土象星座，代表责任和耐心。' },
+                { zodiac: 'aquarius', zodiacName: '水瓶座', level: 'good', description: '创新思维突出，适合尝试新事物。', career: '创意无限', love: '独立自主', wealth: '有新收获', health: '保持好奇', luckyColor: '蓝色', luckyNumber: 3, luckyDirection: '西南', luckyZodiac: '天秤座', knowledgeNote: '水瓶座是风象星座，代表创新和人道主义。' },
+                { zodiac: 'pisces', zodiacName: '双鱼座', level: 'average', description: '适合艺术创作和休息放松。', career: '灵感丰富', love: '情感丰富', wealth: '艺术收益', health: '需要休息', luckyColor: '海蓝色', luckyNumber: 7, luckyDirection: '正西', luckyZodiac: '金牛座', knowledgeNote: '双鱼座是水象星座，代表梦想和直觉。' }
+            ];
+        }
+
+        function getMockZodiac() {
+            return [
+                { animal: 'dragon', animalName: '龙', rank: 1, overall: '2026年运势极佳，各方面都将迎来丰收之年。', career: '事业运势旺盛', love: '桃花运极佳', wealth: '财运大旺', health: '身体健康', luckyColors: ['金色', '红色'], luckyNumbers: [2, 5, 8], luckyAnimal: '猴', knowledgeNote: '龙年出生的人热情洋溢、事业心强。' },
+                { animal: 'tiger', animalName: '虎', rank: 2, overall: '2026年宜主动出击，把握发展机遇。', career: '有晋升机会', love: '感情上升', wealth: '正财不错', health: '精力充沛', luckyColors: ['橙色', '蓝色'], luckyNumbers: [1, 3, 7], luckyAnimal: '马', knowledgeNote: '虎年出生的人勇敢自信、有领导力。' },
+                { animal: 'rat', animalName: '鼠', rank: 3, overall: '2026年财运亨通，但需注意守财。', career: '事业顺利', love: '缘分到了', wealth: '收益增加', health: '注意休息', luckyColors: ['蓝色', '金色'], luckyNumbers: [2, 6, 9], luckyAnimal: '龙', knowledgeNote: '鼠年出生的人聪明机敏、适应力强。' },
+                { animal: 'horse', animalName: '马', rank: 4, overall: '2026年有望遇到事业发展良机。', career: '发展良机', love: '稳定发展', wealth: '正偏财好', health: '运动健身', luckyColors: ['棕色', '绿色'], luckyNumbers: [2, 5, 7], luckyAnimal: '虎', knowledgeNote: '马年出生的人热情奔放、追求自由。' },
+                { animal: 'rabbit', animalName: '兔', rank: 5, overall: '2026年感情运势上升，需注意身体健康。', career: '稳中有升', love: '桃花旺盛', wealth: '收益平稳', health: '多加注意', luckyColors: ['粉色', '绿色'], luckyNumbers: [3, 6, 9], luckyAnimal: '狗', knowledgeNote: '兔年出生的人温柔善良、细腻敏感。' },
+                { animal: 'ox', animalName: '牛', rank: 6, overall: '2026年事业上有贵人相助，适合稳扎稳打。', career: '贵人相助', love: '稳步前进', wealth: '正财不错', health: '保持状态', luckyColors: ['黄色', '棕色'], luckyNumbers: [1, 5, 8], luckyAnimal: '蛇', knowledgeNote: '牛年出生的人踏实勤劳、稳重可靠。' },
+                { animal: 'snake', animalName: '蛇', rank: 7, overall: '2026年适合思考规划，为未来做准备。', career: '规划发展', love: '理性对待', wealth: '积累为主', health: '调养身体', luckyColors: ['黑色', '红色'], luckyNumbers: [2, 7, 8], luckyAnimal: '牛', knowledgeNote: '蛇年出生的人智慧深沉、直觉敏锐。' },
+                { animal: 'monkey', animalName: '猴', rank: 8, overall: '2026年财运不错，但需防小人。', career: '注意小人', love: '社交活跃', wealth: '财运不错', health: '良好', luckyColors: ['白色', '蓝色'], luckyNumbers: [1, 4, 7], luckyAnimal: '蛇', knowledgeNote: '猴年出生的人聪明活泼、善于交际。' },
+                { animal: 'goat', animalName: '羊', rank: 9, overall: '2026年需注意人际关系处理。', career: '人际关系', love: '顺其自然', wealth: '控制消费', health: '注意保养', luckyColors: ['绿色', '白色'], luckyNumbers: [3, 6, 9], luckyAnimal: '兔', knowledgeNote: '羊年出生的人温柔和善、艺术气质。' },
+                { animal: 'rooster', animalName: '鸡', rank: 10, overall: '2026年工作上有突破，适合求新求变。', career: '突破创新', love: '心态平和', wealth: '有新收获', health: '劳逸结合', luckyColors: ['金色', '棕色'], luckyNumbers: [5, 7, 8], luckyAnimal: '龙', knowledgeNote: '鸡年出生的人勤奋诚实、注重细节。' },
+                { animal: 'dog', animalName: '狗', rank: 11, overall: '2026年家庭运势好，适合静心养性。', career: '保持低调', love: '家庭和睦', wealth: '收支平衡', health: '修身养性', luckyColors: ['红色', '绿色'], luckyNumbers: [3, 5, 7], luckyAnimal: '兔', knowledgeNote: '狗年出生的人忠诚正直、富有正义感。' },
+                { animal: 'pig', animalName: '猪', rank: 12, overall: '2026年福气满满，适合修身养性。', career: '静心发展', love: '真诚待人', wealth: '福气财', health: '健康如意', luckyColors: ['黄色', '灰色'], luckyNumbers: [2, 4, 8], luckyAnimal: '羊', knowledgeNote: '猪年出生的人真诚善良、宽容大度。' }
+            ];
+        }
+
+        loadLuckyElement();
+        loadHoroscopes();
+        loadZodiac();
+    </script>
+</body>
+</html>
